@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>Abhay Verma | Cloud Network Engineer — Responsive Portfolio</title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Disable custom cursor on touch devices for better UX */
+    @media (pointer: fine) {
+      .cursor-dot, .cursor-outline {
+        display: block;
+      }
+      body {
+        cursor: none;
+      }
+    }
+    @media (pointer: coarse) {
+      .cursor-dot, .cursor-outline {
+        display: none;
+      }
+      body {
+        cursor: auto;
+      }
+    }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: #0a0c12;
+      color: #eef2ff;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* custom cursor - only on desktop */
+    .cursor-dot { width: 6px; height: 6px; background: #3b82f6; border-radius: 50%; position: fixed; pointer-events: none; z-index: 10000; display: none; }
+    .cursor-outline { width: 38px; height: 38px; border: 2px solid rgba(59, 130, 246, 0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: all 0.12s ease-out; backdrop-filter: blur(2px); display: none; }
+    @media (pointer: fine) {
+      .cursor-dot, .cursor-outline { display: block; }
+    }
+
+    /* grain texture */
+    .grain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 200;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* responsive padding */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1.2rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 1rem;
+      }
+    }
+
+    /* glass navigation - fully responsive */
+    nav {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 1200px;
+      z-index: 1000;
+      background: rgba(10, 12, 22, 0.85);
+      backdrop-filter: blur(16px);
+      border-radius: 60px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.6rem 1.5rem;
+      transition: all 0.3s ease;
+    }
+    @media (max-width: 768px) {
+      nav {
+        width: 92%;
+        padding: 0.5rem 1.2rem;
+        top: 12px;
+      }
+    }
+    @media (max-width: 600px) {
+      nav {
+        width: 95%;
+        padding: 0.5rem 1rem;
+      }
+    }
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      white-space: nowrap;
+    }
+    @media (max-width: 550px) {
+      .logo {
+        font-size: 1.1rem;
+      }
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    @media (max-width: 768px) {
+      .nav-links {
+        gap: 1rem;
+      }
+    }
+    @media (max-width: 550px) {
+      .nav-links {
+        gap: 0.7rem;
+      }
+      .nav-links a {
+        font-size: 0.75rem;
+      }
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #cbd5e6;
+      transition: 0.2s;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+    @media (max-width: 550px) {
+      .nav-links a {
+        font-size: 0.7rem;
+      }
+    }
+    .nav-links a:hover {
+      color: #3b82f6;
+    }
+
+    /* hero section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 5rem 0 2rem;
+    }
+    .hero-grid {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .hero-content {
+      flex: 1.2;
+      min-width: 260px;
+      z-index: 10;
+    }
+    .badge {
+      background: rgba(59, 130, 246, 0.15);
+      padding: 0.35rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      border: 1px solid #3b82f680;
+      display: inline-block;
+      margin-bottom: 1.2rem;
+      backdrop-filter: blur(4px);
+    }
+    .hero-content h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #fff, #60a5fa, #3b82f6);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .hero-content h1 {
+        font-size: 1.9rem;
+      }
+    }
+    .hero-content p {
+      font-size: 1rem;
+      color: #9ca3cf;
+      max-width: 500px;
+      margin-bottom: 1.8rem;
+    }
+    @media (max-width: 480px) {
+      .hero-content p {
+        font-size: 0.9rem;
+      }
+    }
+    .btn-group {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .btn-primary, .btn-outline {
+      padding: 0.7rem 1.5rem;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 480px) {
+      .btn-primary, .btn-outline {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.8rem;
+      }
+    }
+    .btn-primary {
+      background: linear-gradient(95deg, #3b82f6, #2563eb);
+      border-radius: 50px;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 8px 20px rgba(59,130,246,0.3);
+      transition: transform 0.2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid #3b82f6;
+      border-radius: 50px;
+      font-weight: 600;
+      color: #eef2ff;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+    }
+    .btn-outline:hover { background: rgba(59,130,246,0.1); }
+    .hero-visual {
+      flex: 0.9;
+      display: flex;
+      justify-content: center;
+    }
+    .network-sphere {
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle at 30% 30%, rgba(59,130,246,0.2), #0a0c12);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #3b82f660;
+      animation: pulseGlow 4s infinite alternate;
+    }
+    @media (max-width: 768px) {
+      .network-sphere {
+        width: 200px;
+        height: 200px;
+      }
+      .network-sphere i {
+        font-size: 5rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .network-sphere {
+        width: 160px;
+        height: 160px;
+      }
+      .network-sphere i {
+        font-size: 4rem;
+      }
+    }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 20px rgba(59,130,246,0.2); }
+      100% { box-shadow: 0 0 50px rgba(59,130,246,0.5); }
+    }
+    .network-sphere i {
+      font-size: 6rem;
+      color: #3b82f6;
+      filter: drop-shadow(0 0 12px #3b82f6);
+    }
+
+    /* sections */
+    section {
+      padding: 4rem 0;
+    }
+    @media (max-width: 768px) {
+      section {
+        padding: 3rem 0;
+      }
+    }
+    @media (max-width: 480px) {
+      section {
+        padding: 2.5rem 0;
+      }
+    }
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      background: linear-gradient(125deg, #e0e7ff, #3b82f6);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    @media (max-width: 768px) {
+      .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .section-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* responsive grids */
+    .knowledge-grid, .projects-grid, .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .knowledge-grid, .projects-grid, .cert-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.2rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .knowledge-grid, .projects-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .knowledge-card, .project-card {
+      background: rgba(15, 18, 30, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      padding: 1.4rem;
+      border: 1px solid #1f2a4e;
+      transition: all 0.3s;
+    }
+    .project-card {
+      background: rgba(20, 25, 55, 0.85);
+    }
+    .project-card h3 {
+      font-size: 1.3rem;
+    }
+    @media (max-width: 480px) {
+      .knowledge-card, .project-card {
+        padding: 1.2rem;
+      }
+      .project-card h3 {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* skills container responsive */
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+    .skill-category {
+      flex: 1;
+      min-width: 220px;
+      background: rgba(10, 12, 25, 0.6);
+      border-radius: 1.5rem;
+      padding: 1.2rem;
+    }
+    @media (max-width: 768px) {
+      .skill-category {
+        min-width: 200px;
+      }
+    }
+    @media (max-width: 600px) {
+      .skills-container {
+        flex-direction: column;
+      }
+    }
+    .skill-badge {
+      font-size: 0.75rem;
+      padding: 0.4rem 1rem;
+    }
+
+    /* about section responsive */
+    .about-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      align-items: center;
+    }
+    .about-text {
+      flex: 1.5;
+      min-width: 250px;
+    }
+    .about-stats {
+      flex: 1;
+      display: flex;
+      gap: 1.2rem;
+      background: #0e1122;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      justify-content: space-around;
+    }
+    .stat h4 {
+      font-size: 1.6rem;
+    }
+    @media (max-width: 600px) {
+      .about-stats {
+        width: 100%;
+      }
+    }
+
+    /* resume embed responsive */
+    .resume-embed {
+      padding: 1.5rem;
+    }
+    .resume-grid {
+      flex-direction: row;
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .resume-grid {
+        flex-direction: column;
+      }
+      .resume-sidebar, .resume-main {
+        width: 100%;
+      }
+    }
+    .resume-name {
+      font-size: 1.5rem;
+    }
+    @media (max-width: 480px) {
+      .resume-name {
+        font-size: 1.3rem;
+      }
+    }
+
+    /* contact card */
+    .contact-card {
+      padding: 1.8rem;
+    }
+    .social-links {
+      gap: 1.2rem;
+    }
+    .social-icon {
+      width: 45px;
+      height: 45px;
+      font-size: 1.3rem;
+    }
+    @media (max-width: 480px) {
+      .contact-card {
+        padding: 1.5rem;
+      }
+      .social-icon {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.75rem;
+    }
+
+    /* utility */
+    .winner-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.6rem;
+    }
+    .project-tag {
+      font-size: 0.65rem;
+      padding: 0.2rem 0.7rem;
+    }
+    .topic-tag {
+      font-size: 0.65rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor-dot"></div>
+<div class="cursor-outline"></div>
+<div class="grain"></div>
+
+<nav>
+  <div class="nav-bar">
+    <div class="logo">☁️ ABHAY.VERMA</div>
+    <ul class="nav-links">
+      <li><a href="#knowledge">concepts</a></li>
+      <li><a href="#skills">toolkit</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#resume-full">resume</a></li>
+      <li><a href="#contact">connect</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="container hero">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <div class="badge"><i class="fas fa-cloud-arrow-up"></i> AWS · Azure · CCNA | NOC Engineer | Cloud Support</div>
+        <h1>Abhay Verma <br> <span style="color:#3b82f6;">Cloud Network Engineer</span></h1>
+        <p>BCA Graduate | Networking Specialist | Backend Developer. Seeking opportunities as Network Engineer, NOC Engineer, or Cloud Support Engineer.</p>
+        <div class="btn-group">
+          <a href="#knowledge" class="btn-primary"><i class="fas fa-network-wired"></i> Explore stack</a>
+          <a href="#resume-full" class="btn-outline"><i class="fas fa-file-alt"></i> Resume</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="network-sphere">
+          <i class="fas fa-cloud-upload-alt"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KNOWLEDGE BASE -->
+  <section id="knowledge">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-brain"></i> Core Networking · Knowledge Stack</h2>
+      <div class="knowledge-grid">
+        <div class="knowledge-card"><div class="knowledge-icon"><i class="fas fa-chart-line"></i></div><h3>OSI & TCP/IP</h3><p>Complete OSI Model layers, TCP/IP protocol suite, encapsulation, port numbers.</p><div><span class="topic-tag">OSI Model</span><span class="topic-tag">TCP/IP</span><span class="topic-tag">Port Numbers</span></div></div>
+        <div class="knowledge-card"><div class="knowledge-icon"><i class="fas fa-globe"></i></div><h3>IP Addressing & Subnetting</h3><p>IPv4/IPv6, CIDR, VLSM, subnet calculation, NAT/PAT, ARP, ICMP.</p><div><span class="topic-tag">IPv4/IPv6</span><span class="topic-tag">Subnetting</span><span class="topic-tag">NAT/PAT</span></div></div>
+        <div class="knowledge-card"><div class="knowledge-icon"><i class="fas fa-shield-alt"></i></div><h3>Network Security</h3><p>Firewalls, ACLs, Security Groups, DDoS protection, Palo Alto Networks.</p><div><span class="topic-tag">Firewalls</span><span class="topic-tag">Palo Alto</span><span class="topic-tag">Security Groups</span></div></div>
+        <div class="knowledge-card"><div class="knowledge-icon"><i class="fas fa-exchange-alt"></i></div><h3>Routing & Switching</h3><p>Static routing, OSPF basics, VLANs, STP, trunking, Cisco Packet Tracer.</p><div><span class="topic-tag">Static Routes</span><span class="topic-tag">VLANs</span><span class="topic-tag">Cisco PT</span></div></div>
+        <div class="knowledge-card"><div class="knowledge-icon"><i class="fas fa-dns"></i></div><h3>DNS, DHCP & NAT</h3><p>DNS resolution, DHCP scope, NAT types, DNS security basics.</p><div><span class="topic-tag">DNS</span><span class="topic-tag">DHCP</span><span class="topic-tag">NAT</span></div></div>
+        <div class="knowledge-card"><div class="knowledge-icon"><i class="fas fa-cloud"></i></div><h3>Cloud Networking</h3><p>AWS VPC, Azure VNet, hybrid connectivity, VPNs, AWS Cloud Practitioner.</p><div><span class="topic-tag">AWS VPC</span><span class="topic-tag">Azure VNet</span><span class="topic-tag">AZ-900</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-toolbox"></i> Technical Skills</h2>
+      <div class="skills-container">
+        <div class="skill-category"><h3><i class="fas fa-network-wired"></i> Networking</h3><div class="skill-items"><span class="skill-badge">OSI Model</span><span class="skill-badge">TCP/IP</span><span class="skill-badge">IPv4/IPv6</span><span class="skill-badge">Subnetting</span><span class="skill-badge">VLANs</span><span class="skill-badge">DHCP/DNS</span><span class="skill-badge">NAT/PAT</span></div></div>
+        <div class="skill-category"><h3><i class="fas fa-cloud"></i> Cloud & IoT</h3><div class="skill-items"><span class="skill-badge">AWS (in progress)</span><span class="skill-badge">Azure AZ-900</span><span class="skill-badge">IoT Integration</span><span class="skill-badge">Cloud Monitoring</span></div></div>
+        <div class="skill-category"><h3><i class="fas fa-code"></i> Dev & DB</h3><div class="skill-items"><span class="skill-badge">Python</span><span class="skill-badge">Node.js</span><span class="skill-badge">Express</span><span class="skill-badge">MySQL</span><span class="skill-badge">MS SQL</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PROJECTS - FULLY VISIBLE -->
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-rocket"></i> Featured Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="winner-badge"><i class="fas fa-trophy"></i> Hackathon Winner 2024</div>
+          <div class="project-icon"><i class="fas fa-mountain"></i></div>
+          <h3>Landslide Early Warning System</h3>
+          <div class="project-tags"><span class="project-tag">IoT Sensors</span><span class="project-tag">Cloud Integration</span><span class="project-tag">Real-time Alerts</span></div>
+          <p>Real-time environmental monitoring to detect soil movement. Integrated hardware sensors with cloud platforms for live tracking.</p>
+          <div class="project-learn"><i class="fas fa-graduation-cap"></i> IoT+cloud architecture, automated alert systems</div>
+        </div>
+        <div class="project-card">
+          <div class="project-icon"><i class="fas fa-server"></i></div>
+          <h3>Backend API Development</h3>
+          <div class="project-tags"><span class="project-tag">Node.js</span><span class="project-tag">Express</span><span class="project-tag">MySQL</span></div>
+          <p>Secure RESTful APIs with JWT authentication, structured routing, and optimized queries.</p>
+          <div class="project-learn"><i class="fas fa-graduation-cap"></i> API security, query optimization, error handling</div>
+        </div>
+        <div class="project-card">
+          <div class="project-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+          <h3>Hybrid Cloud Network Lab</h3>
+          <div class="project-tags"><span class="project-tag">AWS VPC</span><span class="project-tag">Azure VNet</span><span class="project-tag">VPN</span></div>
+          <p>Designed hybrid cloud network connecting AWS and Azure using site-to-site VPN with route tables and security groups.</p>
+          <div class="project-learn"><i class="fas fa-graduation-cap"></i> Multi-cloud networking, VPN tunnels, cross-cloud routing</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section id="certifications">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-certificate"></i> Certifications & Internships</h2>
+      <div class="cert-grid">
+        <div class="cert-item"><i class="fas fa-shield-haltered"></i> <span>Palo Alto Networks Cybersecurity</span></div>
+        <div class="cert-item"><i class="fas fa-network-wired"></i> <span>Juniper Networking (Routing/Switching)</span></div>
+        <div class="cert-item"><i class="fas fa-cloud"></i> <span>Juniper Cloud Networking (In Progress)</span></div>
+        <div class="cert-item"><i class="fab fa-aws"></i> <span>AWS Cloud Practitioner Essentials</span></div>
+        <div class="cert-item"><i class="fab fa-microsoft"></i> <span>Microsoft Azure Fundamentals (AZ-900)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT + EDUCATION -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-user-astronaut"></i> About Me</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>BCA graduate based in Lucknow, India, with strong foundation in computer networking and cloud technologies. Hands-on OSI model, TCP/IP, subnetting, routing & switching.</p>
+          <p>Combines networking with backend development (Node.js, MySQL). Passionate about secure, scalable cloud infrastructures.</p>
+          <p>Seeking <strong>Network Engineer, NOC Engineer, or Cloud Support Engineer</strong> roles.</p>
+        </div>
+        <div class="about-stats">
+          <div class="stat"><h4>BCA</h4><p>Bachelor's</p></div>
+          <div class="stat"><h4>93.8%</h4><p>Class X</p></div>
+          <div class="stat"><h4>5+</h4><p>Certs</p></div>
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem;">
+        <div class="education-card"><h3>Bachelor of Computer Applications (BCA)</h3><div class="meta">National Post Graduate College, Lucknow (2023–2026)</div></div>
+        <div class="education-card"><h3>Class XII (CBSE) – 76%</h3><div class="meta">Rani Laxmi Bai Memorial School (2023)</div></div>
+        <div class="education-card"><h3>Class X (CBSE) – 93.8%</h3><div class="meta">Rani Laxmi Bai Memorial School (2021)</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESUME SECTION -->
+  <section id="resume-full">
+    <div class="container">
+      <div class="resume-embed">
+        <div class="resume-header">
+          <h2><i class="fas fa-file-alt"></i> Professional Resume</h2>
+          <a href="#" class="btn-download" onclick="window.print(); return false;"><i class="fas fa-download"></i> Save PDF</a>
+        </div>
+        <div class="resume-grid">
+          <div class="resume-sidebar">
+            <div class="resume-name">Abhay Verma</div>
+            <div class="resume-title">Cloud Network Engineer</div>
+            <div class="resume-contact">
+              <p><i class="fas fa-map-marker-alt"></i> Lucknow, India</p>
+              <p><i class="fas fa-phone-alt"></i> +91-7080806102</p>
+              <p><i class="fas fa-envelope"></i> abhay02verma70@gmail.com</p>
+              <p><i class="fab fa-linkedin"></i> linkedin.com/in/abhay-verma02</p>
+            </div>
+            <div class="resume-section"><h4>Core Skills</h4><div><span class="resume-skill">OSI/TCP/IP</span><span class="resume-skill">Subnetting</span><span class="resume-skill">VLANs</span><span class="resume-skill">NAT/PAT</span><span class="resume-skill">Routing</span></div></div>
+            <div class="resume-section"><h4>Cloud</h4><div><span class="resume-skill">AWS</span><span class="resume-skill">Azure AZ-900</span><span class="resume-skill">Packet Tracer</span></div></div>
+          </div>
+          <div class="resume-main">
+            <div class="resume-section"><h4>Summary</h4><p>BCA graduate with networking foundation. Hands-on OSI, TCP/IP, subnetting, routing. Combines networking with backend dev. Seeking Network/NOC/Cloud Support roles.</p></div>
+            <div class="resume-section"><h4>Internships</h4><div class="resume-item"><h5>Palo Alto Networks Cybersecurity</h5><div class="resume-date">2024</div></div><div class="resume-item"><h5>Juniper Networking (Routing/Switching)</h5><div class="resume-date">2024</div></div></div>
+            <div class="resume-section"><h4>Projects</h4><div class="resume-item"><h5>Landslide Warning System (🏆 Winner)</h5></div><div class="resume-item"><h5>Backend API (Node.js/MySQL)</h5></div></div>
+            <div class="resume-section"><h4>Education</h4><div class="resume-item"><h5>BCA, National Post Graduate College</h5><div class="resume-date">2023–2026</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-card">
+        <h3 style="font-size: 1.8rem;"><i class="fas fa-cloud-arrow-down"></i> Let's Connect</h3>
+        <p>Open for Network Engineer, NOC Engineer, or Cloud Support roles.</p>
+        <div class="social-links">
+          <a href="https://linkedin.com/in/abhay-verma02" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://github.com/Abhay05Verma" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
+          <a href="mailto:abhay02verma70@gmail.com" class="social-icon"><i class="fas fa-envelope"></i></a>
+        </div>
+        <div class="btn-group" style="justify-content: center;">
+          <a href="mailto:abhay02verma70@gmail.com" class="btn-primary"><i class="fas fa-paper-plane"></i> Email me</a>
+          <a href="#" class="btn-outline"><i class="fas fa-phone-alt"></i> +91-7080806102</a>
+        </div>
+        <p style="margin-top: 1.2rem;">📍 Lucknow, India | Remote · Onsite</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>© 2025 Abhay Verma — Cloud Network Engineer • "Master the fundamentals, then scale to the cloud."</p>
+</footer>
+
+<script>
+  // Only init custom cursor on non-touch devices
+  if (window.matchMedia("(pointer: fine)").matches) {
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorOutline = document.querySelector('.cursor-outline');
+    window.addEventListener('mousemove', (e) => {
+      cursorDot.style.transform = `translate(${e.clientX - 3}px, ${e.clientY - 3}px)`;
+      cursorOutline.style.transform = `translate(${e.clientX - 19}px, ${e.clientY - 19}px)`;
+    });
+    document.querySelectorAll('a, button, .btn-primary, .knowledge-card, .skill-category, .cert-item, .project-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursorOutline.style.transform = `scale(1.5)`; cursorOutline.style.borderColor = '#60a5fa'; });
+      el.addEventListener('mouseleave', () => { cursorOutline.style.transform = `scale(1)`; cursorOutline.style.borderColor = 'rgba(59,130,246,0.5)'; });
+    });
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.from('.hero-content', { duration: 1, y: 70, opacity: 0, ease: "power3.out" });
+  gsap.from('.hero-visual', { duration: 1, scale: 0.8, opacity: 0, delay: 0.2 });
+  gsap.utils.toArray('.knowledge-card').forEach((card, i) => {
+    gsap.from(card, { scrollTrigger: { trigger: card, start: "top 90%" }, y: 40, opacity: 0, duration: 0.6, delay: i * 0.05 });
+  });
+  gsap.utils.toArray('.skill-category').forEach((cat, i) => {
+    gsap.from(cat, { scrollTrigger: { trigger: cat, start: "top 90%" }, x: -30, opacity: 0, duration: 0.5, delay: i * 0.1 });
+  });
+  gsap.from('.project-card', { scrollTrigger: { trigger: '#projects', start: "top 85%" }, stagger: 0.15, y: 50, opacity: 0, duration: 0.7 });
+</script>
+</body>
+</html>
